@@ -51,7 +51,7 @@ public record Range(BigInteger start, BigInteger end) {
         });
     }
 
-    private boolean isDoubled(final BigInteger a) {
+    private static boolean isDoubled(final BigInteger a) {
         final String string = a.toString(10);
         if (string.length() % 2 == 1) {
             return false;
@@ -60,7 +60,7 @@ public record Range(BigInteger start, BigInteger end) {
     }
 
     public BigInteger sumDoubles() {
-        return sumWith(this::isDoubled);
+        return sumWith(Range::isDoubled);
     }
 
     public BigInteger sumMultiples() {
