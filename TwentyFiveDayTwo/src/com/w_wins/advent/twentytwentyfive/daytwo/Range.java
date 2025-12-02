@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Gatherers;
 import java.util.stream.Stream;
 
-public record Range(BigInteger start, BigInteger end) {
+public record Range(long start, long end) {
 
     private static final IteratingFactorizer FACTORIZER = new IteratingFactorizer(new EratosthenesSieve(10));
 
@@ -23,11 +23,11 @@ public record Range(BigInteger start, BigInteger end) {
 
     public static Range parse(String entry) {
         final String[] parts = entry.split(Pattern.quote("-"));
-        return new Range(new BigInteger(parts[0]), new BigInteger(parts[1]));
+        return new Range(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
     }
 
-    public static boolean isMultiple(BigInteger a) {
-        final String string = a.toString(10);
+    public static boolean isMultiple(long a) {
+        final String string = Long.toString(a,10);
         return isMultiple(string);
     }
 
@@ -51,27 +51,27 @@ public record Range(BigInteger start, BigInteger end) {
         });
     }
 
-    private static boolean isDoubled(final BigInteger a) {
-        final String string = a.toString(10);
+    private static boolean isDoubled(final long a) {
+        final String string = Long.toString(a,10);
         if (string.length() % 2 == 1) {
             return false;
         }
         return string.startsWith(string.substring(string.length() / 2));
     }
 
-    public BigInteger sumDoubles() {
+    public long sumDoubles() {
         return sumWith(Range::isDoubled);
     }
 
-    public BigInteger sumMultiples() {
+    public long sumMultiples() {
         return sumWith(Range::isMultiple);
     }
 
-    private BigInteger sumWith(final Predicate<BigInteger> isInvalid) {
-        BigInteger sum = BigInteger.ZERO;
-        for (BigInteger index = start; index.compareTo(end) <= 0; index = index.add(BigInteger.ONE)) {
+    private long sumWith(final Predicate<Long> isInvalid) {
+        long sum = 0;
+        for (long index = start; index <= end; index = index + 1) {
             if (isInvalid.test(index)) {
-                sum = sum.add(index);
+                sum = sum + index;
             }
         }
         return sum;
