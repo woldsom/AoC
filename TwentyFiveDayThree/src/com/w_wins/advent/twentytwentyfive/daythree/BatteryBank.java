@@ -1,5 +1,9 @@
 package com.w_wins.advent.twentytwentyfive.daythree;
 
+import com.w_wins.common.LongNumberBuilder;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
