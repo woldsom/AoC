@@ -1,41 +1,28 @@
 package com.w_wins.advent.twentytwentyfive.mains;
 
-import com.w_wins.advent.twentytwentyfive.daythree.Three;
+import com.w_wins.advent.twentytwentyfive.daythree.Arguments;
+import com.w_wins.advent.twentytwentyfive.daythree.BatteryBank;
+import com.w_wins.common.Functions;
 import com.w_wins.iostream.Utf8ResourceLines;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 public class DayThreeMain {
-
-    public static final Comparator<Integer> DESCENDING = Comparator.<Integer>naturalOrder().reversed();
-
     static void main() {
-        final List<List<Integer>> input = new Utf8ResourceLines(Three.class, "/input.txt").evaluate(lines -> lines.map(line -> line.chars().mapToObj(c -> c - '0').toList()).toList());
-        final int sum = input.stream().mapToInt(bank -> {
-            final List<Integer> sorted = getSorted(bank);
-            if (sorted.getFirst().equals(sorted.get(1))) {
-                return sorted.getFirst() * 11;
-            }
-            final int largestPosition = bank.indexOf(sorted.getFirst());
-            if (largestPosition < bank.size() - 1) {
-                return sorted.getFirst() * 10 + getSorted(bank.subList(largestPosition + 1, bank.size())).getFirst();
-            }
-            final Set<Integer> sortedSet = new TreeSet<>(DESCENDING);
-            sortedSet.addAll(sorted);
-            final int secondLargest = sortedSet.stream().skip(1).findFirst().orElseThrow();
-            final int secondLargestPosition = bank.indexOf(secondLargest);
-            return secondLargest * 10 + getSorted(bank.subList(secondLargestPosition + 1, bank.size())).getFirst();
-        }).sum();
-        IO.println(sum);
-    }
-
-    private static List<Integer> getSorted(final List<Integer> unmodifiable) {
-        final List<Integer> sorted = new ArrayList<>(unmodifiable);
-        sorted.sort(DESCENDING);
-        return sorted;
+        final List<BatteryBank> input = new Utf8ResourceLines(BatteryBank.class, "/input.txt").evaluate(BatteryBank::parse);
+        final Map<Arguments, Long> memo = new HashMap<>();
+        final BiFunction<BatteryBank, Integer, Long> memoBound = (batteryBank, batteryCount) -> batteryBank.bestJolt(batteryCount, memo);
+        if (Math.addExact(1, 1) == 2) {
+            final long part1 = input.stream().map(Functions.bindRight(memoBound, 2)).mapToLong(x -> x).sum();
+            final long part2 = input.stream().map(Functions.bindRight(memoBound, 12)).mapToLong(x -> x).sum();
+            IO.println(part1);
+            IO.println(part2);
+        } else {
+            IO.println(input.getFirst().bestJolt(12, memo));
+            IO.println(new BatteryBank(List.of(1, 1, 1, 1, 1, 1)).bestJolt(3, memo));
+        }
     }
 }
