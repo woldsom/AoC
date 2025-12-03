@@ -3,7 +3,6 @@ package com.w_wins.advent.twentytwentyfive.daytwo;
 import com.w_wins.numbers.primes.EratosthenesSieve;
 import com.w_wins.numbers.primes.IteratingFactorizer;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
