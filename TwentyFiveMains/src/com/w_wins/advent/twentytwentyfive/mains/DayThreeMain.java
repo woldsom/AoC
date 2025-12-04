@@ -7,18 +7,11 @@ import com.w_wins.common.Strings;
 import com.w_wins.iostream.Utf8ResourceLines;
 
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class DayThreeMain {
     static void main() {
-        IntStream.range(0, 10000).forEach(_ -> {
-            final long nano = System.nanoTime();
-            final String result = new Utf8ResourceLines(BatteryBankGatherer.class, "/input.txt").evaluate(new AdventTwoPartEvaluator(run(2), run(12)));
-            final long time = System.nanoTime() - nano;
-            IO.println(time);
-            IO.println(result);
-        });
+        IO.println(new Utf8ResourceLines(BatteryBankGatherer.class, "/input.txt").evaluate(new AdventTwoPartEvaluator(run(2), run(12))));
     }
 
     private static Function<Stream<String>, Long> run(final int batteryCount) {
