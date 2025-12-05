@@ -8,4 +8,5 @@ module com.w_wins.Common {
     exports com.w_wins.numbers.primes;
     exports com.w_wins.numbers.pythagoras;
     exports com.w_wins.numbers.enumerating;
+    exports com.w_wins.collections;
 }

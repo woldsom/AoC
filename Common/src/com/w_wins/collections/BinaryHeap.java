@@ -5,12 +5,15 @@ import com.w_wins.common.CollectionUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -26,14 +29,14 @@ public final class BinaryHeap<K extends Comparable<? super K>, V> {
         });
     }
 
-    public BinaryHeap(final int setSize, final Collection<V> elements, final Function<V, K> setComparableExtractor) {
+    public BinaryHeap(final Collection<V> elements, final Function<V, K> setComparableExtractor) {
         binary = new ArrayList<>(elements.stream().map(HeapElement.withFunction(setComparableExtractor)).toList());
         heapify();
         IntStream.range(0, binary.size()).forEach(index -> indexOf.put(binary.get(index).value, index));
     }
 
     public static <K extends Comparable<? super K>, V> BinaryHeap<K, V> build(final Collection<V> vertexes, final Function<V, K> comparableExtractor) {
-        return new BinaryHeap<>(vertexes.size(), vertexes, comparableExtractor);
+        return new BinaryHeap<>(vertexes, comparableExtractor);
     }
 
     public V pop() {
@@ -123,8 +126,8 @@ public final class BinaryHeap<K extends Comparable<? super K>, V> {
 
     public K peekKey(final V vertex) {
         final Integer index = indexOf.get(vertex);
-        if(index==null) {
-            throw new NoSuchElementException(vertex+" not in "+binary.stream().map(HeapElement::value).toList());
+        if (index == null) {
+            throw new NoSuchElementException(vertex + " not in " + binary.stream().map(HeapElement::value).toList());
         }
         return binary.get(index).key();
     }
@@ -134,6 +137,7 @@ public final class BinaryHeap<K extends Comparable<? super K>, V> {
         if (index == null) {
             throw new NoSuchElementException();
         }
+        binary.set(index,new HeapElement<>(newKey,value));
         int currentIndex = index;
         while (currentIndex > 0) {
             final int parent = (currentIndex - 1) / 2;
@@ -150,6 +154,28 @@ public final class BinaryHeap<K extends Comparable<? super K>, V> {
 
     public boolean contains(V value) {
         return indexOf.containsKey(value);
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryHeap[" + content() + "]";
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        return this.content().equals(((BinaryHeap<?, ?>) other).content());
+    }
+
+    private Set<V> content() {
+        return binary.stream().map(HeapElement::value).collect(Collectors.toCollection(HashSet::new));
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     private record HeapElement<K extends Comparable<? super K>, V>(
