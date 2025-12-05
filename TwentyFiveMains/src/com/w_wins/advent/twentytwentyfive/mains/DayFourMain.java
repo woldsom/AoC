@@ -49,7 +49,7 @@ public class DayFourMain {
             rolls.remove(removed.position());
         }
         final long remainingCount = heap.stream().count();
-        //IO.println("Out of " + originalCount + " rolls, " + remainingCount + " remains, meaning " + (originalCount - remainingCount) + " was removed");
+        IO.println("Out of " + originalCount + " rolls, " + remainingCount + " remains, meaning " + (originalCount - remainingCount) + " was removed");
     }
 
     private static void iterateRemoval(final Map<Coordinate, Boolean> map, final Predicate<Coordinate> boundsCheck) {
