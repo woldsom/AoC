@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Gatherer;
 
 public final class Functions {
     public static <T, U, R> BiFunction<T, U, R> reverse(final BiFunction<U, T, R> function) {
@@ -202,5 +203,9 @@ public final class Functions {
 
     public static <T, R> Function<T, R> fromPredicate(Predicate<T> predicate, Function<T, R> trueFunction, Function<T, R> falseFunction) {
         return t -> (predicate.test(t) ? trueFunction : falseFunction).apply(t);
+    }
+
+    public static <T> BiConsumer<T, Gatherer.Downstream<? super T>> pushDownstream() {
+        return (t, downstream) -> downstream.push(t);
     }
 }
