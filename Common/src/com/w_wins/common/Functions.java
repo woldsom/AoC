@@ -39,7 +39,7 @@ public final class Functions {
     }
 
     public static <K, V, U> Function<Map.Entry<K, V>, Map.Entry<K, U>> newValue(final BiFunction<K, V, U> valueFunction) {
-        return e -> Collections.singletonMap(e.getKey(), valueFunction.apply(e.getKey(),e.getValue())).entrySet().stream().findAny().orElseThrow();
+        return e -> Collections.singletonMap(e.getKey(), valueFunction.apply(e.getKey(), e.getValue())).entrySet().stream().findAny().orElseThrow();
     }
 
     public static <K, V, U> Function<Map.Entry<K, V>, Map.Entry<K, U>> onValue(final Function<V, U> valueFunction) {
