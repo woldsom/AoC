@@ -31,7 +31,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -59,6 +58,31 @@ public final class Streams {
                     }
                 }
         );
+    }
+
+    public static <T> Stream<T> splitLast(final Stream<T> stream, final Consumer<T> lastConsumer) {
+        final Spliterator<T> delegate = stream.spliterator();
+        final AtomicReference<Optional<T>> previousElement = new AtomicReference<>();
+        final Spliterator<T> iterator = new Spliterators.AbstractSpliterator<T>(delegate.estimateSize(), delegate.characteristics() & ~Spliterator.SIZED) {
+            @Override
+            public boolean tryAdvance(final Consumer<? super T> action) {
+                final AtomicReference<T> elementReference = new AtomicReference<>();
+                if (delegate.tryAdvance(elementReference::set)) {
+                    Optional<T> returnValue;
+                    do {
+                        returnValue = previousElement.get();
+                    } while (!previousElement.compareAndSet(returnValue, Optional.ofNullable(elementReference.get())));
+                    if (returnValue != null) {
+                        action.accept(returnValue.orElse(null));
+                    }
+                    return true;
+                } else {
+                    lastConsumer.accept(previousElement.get().orElse(null));
+                    return false;
+                }
+            }
+        };
+        return StreamSupport.stream(iterator, false);
     }
 
     public static <T, U> Stream<U> unpartition(final Map<Boolean, ? extends Collection<T>> partitionMap, final Function<T, U> falseMap, final Function<T, U> trueMap) {
@@ -146,8 +170,9 @@ public final class Streams {
         }).filter(deque -> !deque.isEmpty()).map(deque -> deque.stream().mapToInt(x -> x));
     }
 
+    @Deprecated
     public static Stream<String> split(final String line, final String separator) {
-        return Arrays.stream(line.split(Pattern.quote(separator)));
+        return Strings.split(line, separator);
     }
 
     public static IntStream presentInt(final Stream<OptionalInt> original) {

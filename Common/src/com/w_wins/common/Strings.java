@@ -1,6 +1,8 @@
 package com.w_wins.common;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -48,5 +50,17 @@ public final class Strings {
         }
         final int partLength = source.length() / parts;
         return IntStream.range(0, parts).map(x -> x * partLength).mapToObj(index -> source.substring(index, index + partLength));
+    }
+
+    public static Stream<String> split(final String string) {
+        return split(string, Pattern.compile("\\s+"));
+    }
+
+    public static Stream<String> split(final String string, final String delimiter) {
+        return split(string, Pattern.compile(Pattern.quote(delimiter)));
+    }
+
+    private static Stream<String> split(final String string, final Pattern pattern) {
+        return Arrays.stream(pattern.split(string));
     }
 }
