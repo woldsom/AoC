@@ -32,7 +32,7 @@ public final class LineGroupEvaluator<T, A, F> implements Function<Stream<String
     }
 
     private void add(final List<String> lineAccumulator, final A container) {
-        if (lineAccumulator.size() > 0) {
+        if (!lineAccumulator.isEmpty()) {
             collector.accumulator().accept(container, groupFunction.apply(lineAccumulator.stream()));
             lineAccumulator.clear();
         }
