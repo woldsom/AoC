@@ -166,8 +166,9 @@ public final class CollectionUtil {
         final List<Iterator<T>> iterators = input.stream().map(List::iterator).toList();
         final List<List<T>> returnValue = new ArrayList<>();
         while (true) {
-            if (!iterators.stream().anyMatch(Iterator::hasNext))
+            if (!iterators.stream().anyMatch(Iterator::hasNext)) {
                 break;
+            }
             returnValue.add(iterators.stream().filter(Iterator::hasNext).map(Iterator::next).collect(Collectors.toCollection(factory)));
         }
         return returnValue;
@@ -198,12 +199,12 @@ public final class CollectionUtil {
     }
 
     public static <K> Map<K, BigInteger> mergeFrequencyMaps(Map<K, BigInteger> a, Map<K, BigInteger> b) {
-        final Map<K,BigInteger> newMap = new HashMap<>(a);
-        b.forEach((key,value)->{
-            if(newMap.containsKey(key)){
-                newMap.put(key,value.add(newMap.get(key)));
+        final Map<K, BigInteger> newMap = new HashMap<>(a);
+        b.forEach((key, value) -> {
+            if (newMap.containsKey(key)) {
+                newMap.put(key, value.add(newMap.get(key)));
             } else {
-                newMap.put(key,value);
+                newMap.put(key, value);
             }
         });
         return newMap;
