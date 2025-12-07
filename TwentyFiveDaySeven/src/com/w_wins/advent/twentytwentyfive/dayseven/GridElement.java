@@ -1,9 +1,9 @@
 package com.w_wins.advent.twentytwentyfive.dayseven;
 
-public enum Seven {
+public enum GridElement {
     SPLITTER, FLOOR, BEGIN;
 
-    public static Seven parse(String s) {
+    public static GridElement parse(String s) {
         return switch (s) {
             case "^" -> SPLITTER;
             case "." -> FLOOR;

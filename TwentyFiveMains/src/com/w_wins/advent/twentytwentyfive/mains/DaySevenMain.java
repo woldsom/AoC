@@ -1,6 +1,6 @@
 package com.w_wins.advent.twentytwentyfive.mains;
 
-import com.w_wins.advent.twentytwentyfive.dayseven.Seven;
+import com.w_wins.advent.twentytwentyfive.dayseven.GridElement;
 import com.w_wins.adventcommon.Coordinate;
 import com.w_wins.adventcommon.Grids;
 import com.w_wins.common.CollectionUtil;
@@ -18,19 +18,19 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.w_wins.advent.twentytwentyfive.dayseven.Seven.BEGIN;
-import static com.w_wins.advent.twentytwentyfive.dayseven.Seven.SPLITTER;
+import static com.w_wins.advent.twentytwentyfive.dayseven.GridElement.BEGIN;
+import static com.w_wins.advent.twentytwentyfive.dayseven.GridElement.SPLITTER;
 
 public class DaySevenMain {
     static void main() {
-        final Grid<Seven> grid = new Utf8ResourceLines(Seven.class, "/input.txt").evaluate(lines -> Grids.map(new SimpleGridParser(GridConfig.CHAR_GRID).apply(lines), Functions.extraLeft(Seven::parse)));
+        final Grid<GridElement> grid = new Utf8ResourceLines(GridElement.class, "/input.txt").evaluate(lines -> Grids.map(new SimpleGridParser(GridConfig.CHAR_GRID).apply(lines), Functions.extraLeft(GridElement::parse)));
         final SortedSet<Coordinate> splitters = new TreeSet<>(Grids.findAll(grid, SPLITTER));
         final Coordinate begin = Grids.find(grid, BEGIN);
         final Map<Integer,Long> beams = new HashMap<>(Map.of(begin.x(),1L));
         final int totalSplits = IntStream.range(begin.y(), grid.getRowCount()).map(y -> {
             final Set<Integer> lineSplitters = splitters.tailSet(new Coordinate(0, y)).headSet(new Coordinate(-1, y + 1)).stream().map(Coordinate::x).collect(Collectors.toSet());
             final Set<Integer> splits = CollectionUtil.intersection(lineSplitters, beams.keySet());
-            splits.stream().forEach(x-> {
+            splits.forEach(x-> {
                 beams.merge(x + 1, beams.get(x), Math::addExact);
                 beams.merge(x - 1, beams.get(x), Math::addExact);
             });
