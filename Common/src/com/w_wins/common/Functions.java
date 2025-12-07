@@ -208,4 +208,12 @@ public final class Functions {
     public static <T> BiConsumer<T, Gatherer.Downstream<? super T>> pushDownstream() {
         return (t, downstream) -> downstream.push(t);
     }
+
+    public static <I, A, R> BiFunction<I, A, R> extraLeft(Function<A, R> original) {
+        return (_, r) -> original.apply(r);
+    }
+
+    public static <I, A, R> BiFunction<A, I, R> extraRight(Function<A, R> original) {
+        return (l, _) -> original.apply(l);
+    }
 }

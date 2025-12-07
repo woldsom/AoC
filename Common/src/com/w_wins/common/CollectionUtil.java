@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public final class CollectionUtil {
@@ -212,7 +214,11 @@ public final class CollectionUtil {
 
     public static <V> void swap(final ArrayList<V> list, final int a, final int b) {
         final V tmp = list.get(a);
-        list.set(a,list.get(b));
-        list.set(b,tmp);
+        list.set(a, list.get(b));
+        list.set(b, tmp);
+    }
+
+    public static <V,U> Stream<U> selfCross(final List<V> list, final BiFunction<V,V,U> consumer) {
+        return IntStream.range(0, list.size() - 1).boxed().flatMap(a -> IntStream.range(a + 1, list.size()).mapToObj(b -> consumer.apply(list.get(a), list.get(b))));
     }
 }
