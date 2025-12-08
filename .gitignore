@@ -34,3 +34,6 @@ bin/
 ### Advent of code ###
 **/input.txt
 **/test.txt
+
+### Local lib (no build system) ###
+lib/
