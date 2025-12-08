@@ -1,6 +1,7 @@
 package com.w_wins.advent.twentytwentyfive.dayeight;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 
 public record Edge(Set<Coordinate> points, long squareLength) implements Comparable<Edge>{
@@ -11,6 +12,14 @@ public record Edge(Set<Coordinate> points, long squareLength) implements Compara
         if (points.size() != 2) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Net asNet() {
+        return new Net(new HashSet<>(Set.of(this)), new HashSet<>(points()));
+    }
+
+    public Long score() {
+        return points().stream().map(Coordinate::x).map(Integer::longValue).reduce(1L, Math::multiplyExact);
     }
 
     @Override

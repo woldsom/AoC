@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 import java.util.stream.Gatherer;
 
 public final class Functions {
@@ -215,5 +216,10 @@ public final class Functions {
 
     public static <I, A, R> BiFunction<A, I, R> extraRight(Function<A, R> original) {
         return (l, _) -> original.apply(l);
+    }
+
+    public static <T> T passAndReturn(final T argument, final Consumer<T> consumer) {
+        consumer.accept(argument);
+        return argument;
     }
 }

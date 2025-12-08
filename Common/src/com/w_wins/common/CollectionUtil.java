@@ -221,4 +221,8 @@ public final class CollectionUtil {
     public static <V,U> Stream<U> selfCross(final List<V> list, final BiFunction<V,V,U> consumer) {
         return IntStream.range(0, list.size() - 1).boxed().flatMap(a -> IntStream.range(a + 1, list.size()).mapToObj(b -> consumer.apply(list.get(a), list.get(b))));
     }
+
+    public static <T> T singleton(final Collection<T> collection) {
+        return collection.stream().findAny().orElseThrow();
+    }
 }
