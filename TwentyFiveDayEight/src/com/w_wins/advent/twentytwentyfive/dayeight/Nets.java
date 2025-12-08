@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record Nets(Map<Coordinate, Net> map, int target) {
-    public static Stream<Integer> netSizes(final Nets nets) {
-        return nets.map().values().stream().distinct().map(Net::size).sorted(Comparator.reverseOrder());
+    public Stream<Integer> netSizes() {
+        return map().values().stream().distinct().map(Net::size).sorted(Comparator.reverseOrder());
     }
 
     public static Nets withTarget(final int target) {

@@ -18,7 +18,7 @@ public class DayEightMain {
         IO.println("Part 2: " + Streams.presentLong(Streams.asMap(CollectionUtil.selfCross(coordinates, Coordinate::edge).collect(Collectors.toCollection(TreeSet::new)).stream().map(nets::extendWithAndPossiblyScore))
                 .peek(e -> {
                     if (e.getKey() == 999) {
-                        IO.println("Part 1: " + Nets.netSizes(nets).limit(3).mapToLong(x -> x).reduce(1, Math::multiplyExact));
+                        IO.println("Part 1: " + nets.netSizes().limit(3).mapToLong(x -> x).reduce(1, Math::multiplyExact));
                     }
                 })
                 .map(Map.Entry::getValue)).findFirst().orElseThrow());
