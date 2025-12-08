@@ -19,11 +19,10 @@ import java.util.stream.Collectors;
 
 public class DayEightMain {
     static void main() {
-        final List<Coordinate> coordinates = new Utf8ResourceLines(Coordinate.class, "/test.txt").evaluate(lines -> lines.map(Coordinate::parse).toList());
-        final int count = 10;
+        final List<Coordinate> coordinates = new Utf8ResourceLines(Coordinate.class, "/input.txt").evaluate(lines -> lines.map(Coordinate::parse).toList());
         final SortedSet<Edge> edges = CollectionUtil.selfCross(coordinates, Coordinate::edge).collect(Collectors.toCollection(TreeSet::new));
         final Map<Coordinate, Net> map = new HashMap<>();
-        edges.stream().limit(count).forEach(edge -> {
+        edges.forEach(edge -> {
             final Set<Net> nets = edge.points().stream().filter(map::containsKey).map(map::get).collect(Collectors.toSet());
             final Net newNet;
             switch (nets.size()) {
@@ -31,6 +30,7 @@ public class DayEightMain {
                     IO.println("Edge " + edge + " is new");
                     newNet = new Net(new HashSet<>(Set.of(edge)), new HashSet<>(edge.points()));
                     edge.points().forEach(point -> map.put(point, newNet));
+                    check(edge, newNet, coordinates);
                     break;
                 case 1:
                     IO.println("Edge " + edge + " connects to one existing net");
@@ -38,6 +38,7 @@ public class DayEightMain {
                         net.edges().add(edge);
                         net.coordinates().addAll(edge.points());
                         edge.points().forEach(p->map.put(p,net));
+                        check(edge,net, coordinates);
                     });
                     break;
                 case 2:
@@ -47,6 +48,7 @@ public class DayEightMain {
                     newNet.coordinates().addAll(edge.points());
                     map.keySet().removeAll(newNet.coordinates());
                     newNet.coordinates().forEach(Functions.bindRight(map::put, newNet)::apply);
+                    check(edge, newNet, coordinates);
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -56,7 +58,14 @@ public class DayEightMain {
         IO.println(result);
         final Set<Set<Edge>> netEdges = map.values().stream().map(Net::edges).collect(Collectors.toSet());
         IO.println(netEdges.stream().mapToInt(Set::size).sum());
-        // 28288 wrong
-        // 39304 wrong
+        IO.println(map.values().stream().distinct().count());
+    }
+
+    private static void check(final Edge edge, final Net newNet, final List<Coordinate> coordinates) {
+        if(newNet.coordinates().size()== coordinates.size()){
+            IO.println(edge);
+            IO.println(edge.points().stream().map(Coordinate::x).mapToLong(x->x).boxed().reduce(1L,Math::multiplyExact));
+            throw new IllegalArgumentException();
+        }
     }
 }
