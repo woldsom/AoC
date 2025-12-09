@@ -51,14 +51,7 @@ public record Rectangle(Coordinate a, Coordinate b, boolean convex) implements C
         final boolean yInside = minY > otherMinY && minY < otherMaxY || maxY < otherMaxY && maxY > otherMinY;
         final boolean xContains = maxX >= otherMinX && minX <= otherMinX && minX <= otherMaxX && maxX >= otherMaxX; //??
         final boolean yContains = maxY >= otherMinY && minY <= otherMinY && minY <= otherMaxY && maxY >= otherMaxY; //??
-        final boolean returnValue = (xInside || xContains) && (yInside || yContains);
-        /*
-        if(returnValue){
-            IO.println("Intersects! "+this+" , "+square);
-        } else {
-            IO.println("Not! "+this+" , "+square);
-        }*/
-        return returnValue;
+        return (xInside || xContains) && (yInside || yContains);
     }
 
     @Override

@@ -25,17 +25,14 @@ public class DayNineMain {
         points.add(points.get(1));
         points.stream().gather(Gatherers.windowSliding(3)).forEach(corner->{
             final Rectangle rectangle = Rectangle.ofLines(corner);
-            //IO.println("Square:"+square);
             if(rectangle ==null) {
-                throw new IllegalArgumentException("Did not expect bad squares, but this one was: "+corner);
+                throw new IllegalArgumentException("Did not expect bad rectangles, but this one was: "+corner);
             }
             if(!rectangle.convex()){
                 candidates.removeIf(rectangle::intersects);
             }
         });
-        final Rectangle winner = candidates.getLast();
-        IO.println("Winner: "+winner);
-        return winner.area();
+        return candidates.getLast().area();
     }
 
     private static long partOne(final Stream<String> lines) {
