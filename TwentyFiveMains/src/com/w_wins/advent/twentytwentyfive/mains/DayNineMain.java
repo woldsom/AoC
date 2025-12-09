@@ -14,11 +14,12 @@ import java.util.stream.Stream;
 
 public class DayNineMain {
     static void main() {
-        IO.println(new Utf8ResourceLines(Rectangle.class, "/input.txt").evaluate(new AdventTwoPartEvaluator(DayNineMain::partOne, DayNineMain::partTwo)));
+        IO.println(new Utf8ResourceLines(Rectangle.class, "/timvde.txt").evaluate(new AdventTwoPartEvaluator(DayNineMain::partOne, DayNineMain::partTwo)));
     }
 
     private static long partTwo(final Stream<String> lines) {
         final List<Coordinate> points = new ArrayList<>(points(lines));
+        final long start = System.nanoTime();
         final List<Rectangle> candidates = new ArrayList<>(CollectionUtil.selfCross(points, Rectangle::thatIsConvex).toList());
         candidates.sort(Rectangle.COMPARATOR);
         points.add(points.getFirst());
@@ -32,11 +33,17 @@ public class DayNineMain {
                 candidates.removeIf(rectangle::intersects);
             }
         });
-        return candidates.getLast().area();
+        final long area = candidates.getLast().area();
+        IO.println(System.nanoTime()-start);
+        return area;
     }
 
     private static long partOne(final Stream<String> lines) {
-        return CollectionUtil.selfCross(points(lines), Coordinate::minus).mapToLong(c -> Math.multiplyExact(c.x() + 1L, c.y() + 1L)).max().orElseThrow();
+        final List<Coordinate> points = points(lines);
+        final long start = System.nanoTime();
+        final long result = CollectionUtil.selfCross(points, Coordinate::minus).mapToLong(c -> Math.multiplyExact(c.x() + 1L, c.y() + 1L)).max().orElseThrow();
+        IO.println(System.nanoTime()-start);
+        return result;
     }
 
     private static List<Coordinate> points(final Stream<String> lines) {
