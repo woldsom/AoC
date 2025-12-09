@@ -1,6 +1,6 @@
 package com.w_wins.advent.twentytwentyfive.mains;
 
-import com.w_wins.advent.twentytwentyfive.daynine.Square;
+import com.w_wins.advent.twentytwentyfive.daynine.Rectangle;
 import com.w_wins.adventcommon.AdventTwoPartEvaluator;
 import com.w_wins.adventcommon.Coordinate;
 import com.w_wins.common.CollectionUtil;
@@ -14,26 +14,26 @@ import java.util.stream.Stream;
 
 public class DayNineMain {
     static void main() {
-        IO.println(new Utf8ResourceLines(Square.class, "/input.txt").evaluate(new AdventTwoPartEvaluator(DayNineMain::partOne, DayNineMain::partTwo)));
+        IO.println(new Utf8ResourceLines(Rectangle.class, "/input.txt").evaluate(new AdventTwoPartEvaluator(DayNineMain::partOne, DayNineMain::partTwo)));
     }
 
     private static long partTwo(final Stream<String> lines) {
         final List<Coordinate> points = new ArrayList<>(points(lines));
-        final List<Square> candidates = new ArrayList<>(CollectionUtil.selfCross(points,Square::thatIsConvex).toList());
-        candidates.sort(Square.COMPARATOR);
+        final List<Rectangle> candidates = new ArrayList<>(CollectionUtil.selfCross(points, Rectangle::thatIsConvex).toList());
+        candidates.sort(Rectangle.COMPARATOR);
         points.add(points.getFirst());
         points.add(points.get(1));
         points.stream().gather(Gatherers.windowSliding(3)).forEach(corner->{
-            final Square square = Square.ofLines(corner);
+            final Rectangle rectangle = Rectangle.ofLines(corner);
             //IO.println("Square:"+square);
-            if(square==null) {
+            if(rectangle ==null) {
                 throw new IllegalArgumentException("Did not expect bad squares, but this one was: "+corner);
             }
-            if(!square.convex()){
-                candidates.removeIf(square::intersects);
+            if(!rectangle.convex()){
+                candidates.removeIf(rectangle::intersects);
             }
         });
-        final Square winner = candidates.getLast();
+        final Rectangle winner = candidates.getLast();
         IO.println("Winner: "+winner);
         return winner.area();
     }
