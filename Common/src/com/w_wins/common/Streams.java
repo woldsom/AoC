@@ -131,13 +131,13 @@ public final class Streams {
         pairStream(stream, (BiFunction<T, T, Void>) (a, b) -> {
             consumer.accept(a, b);
             return null;
-        }).forEach((unused) -> {
+        }).forEach((_) -> {
         });
     }
 
     public static <T> Stream<Map.Entry<Integer, T>> asMap(final Stream<T> sequentialStream) {
         final int[] index = new int[]{0};
-        return sequentialStream.sequential().map(v -> Collections.singletonMap(index[0]++, v).entrySet().stream().findAny().orElseThrow());
+        return sequentialStream.sequential().map(v -> Map.entry(index[0]++, v));
     }
 
     public static <T> Stream<Stream<T>> slidingWindow(final Stream<T> stream, final int windowSize) {

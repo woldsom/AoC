@@ -7,8 +7,9 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 public final class Maps {
+    @Deprecated
     public static <K, V> Map.Entry<K, V> entry(final K key, final V value) {
-        return Collections.singletonMap(key, value).entrySet().stream().collect(CollectorUtil.singleton());
+        return Map.entry(key, value);
     }
 
     public static <K, V> Stream<Map.Entry<K, V>> entrySet(final Map<K, V> map) {
