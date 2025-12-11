@@ -2,7 +2,6 @@ package com.w_wins.adventcommon;
 
 import com.w_wins.common.CollectorUtil;
 import com.w_wins.common.Functions;
-import com.w_wins.common.Maps;
 import com.w_wins.fixedwidth.Grid;
 
 import java.util.Map;
@@ -29,7 +28,10 @@ public final class BeamGrid<T> implements Grid<Set<Beam<T>>> {
                         entry -> entry.getKey().x(),
                         Collectors.collectingAndThen(
                                 Collectors.mapping(
-                                        entry -> Maps.entry(entry.getKey().y(), new Beam<>(entry.getKey(), new Coordinate(0, 1), entry.getValue())),
+                                        entry -> {
+                                            final Beam<T> value = new Beam<>(entry.getKey(), new Coordinate(0, 1), entry.getValue());
+                                            return Map.entry(entry.getKey().y(), value);
+                                        },
                                         CollectorUtil.toMap()
                                 ),
                                 TreeMap::new
@@ -41,7 +43,10 @@ public final class BeamGrid<T> implements Grid<Set<Beam<T>>> {
                         entry -> entry.getKey().y(),
                         Collectors.collectingAndThen(
                                 Collectors.mapping(
-                                        entry -> Maps.entry(entry.getKey().x(), new Beam<>(entry.getKey(), new Coordinate(1, 0), entry.getValue())),
+                                        entry -> {
+                                            final Beam<T> value = new Beam<>(entry.getKey(), new Coordinate(1, 0), entry.getValue());
+                                            return Map.entry(entry.getKey().x(), value);
+                                        },
                                         CollectorUtil.toMap()
                                 ),
                                 TreeMap::new

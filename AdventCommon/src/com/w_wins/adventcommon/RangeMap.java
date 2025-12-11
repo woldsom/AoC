@@ -1,7 +1,5 @@
 package com.w_wins.adventcommon;
 
-import com.w_wins.common.Maps;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,9 +89,12 @@ public final class RangeMap<V> {
         final NavigableMap<LongRange, V> tailMap = Optional.ofNullable(ranges.floorKey(range.transform(l->l-1))).map(floor->ranges.tailMap(floor,true)).orElse(ranges);
         final NavigableMap<LongRange, V> middleMap = Optional.ofNullable(ranges.floorKey(new LongRange(range.end()+1, range.end()+1))).map(ceiling->tailMap.headMap(ceiling,true)).orElse(tailMap);
         middleMap.entrySet().stream().
-                map(entry-> Maps.entry(entry.getKey().intersection(range), entry.getValue())).
+                map(entry-> {
+                    final Optional<LongRange> key = entry.getKey().intersection(range);
+                    return Map.entry(key, entry.getValue());
+                }).
                 filter(entry->entry.getKey().isPresent()).
-                map(entry->Maps.entry(entry.getKey().orElseThrow(),entry.getValue())).
+                map(entry-> Map.entry(entry.getKey().orElseThrow(), entry.getValue())).
                 forEach(entry->copy.put(entry.getKey(),entry.getValue()));
         return copy;
     }

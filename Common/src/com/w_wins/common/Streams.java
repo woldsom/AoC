@@ -5,7 +5,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Deque;
@@ -184,7 +183,7 @@ public final class Streams {
     }
 
     public static <K, V> Stream<Map.Entry<K, V>> presentValue(final Stream<Map.Entry<K, Optional<V>>> original) {
-        return present(original.map(entry -> entry.getValue().map(value -> Maps.entry(entry.getKey(), value))));
+        return present(original.map(entry -> entry.getValue().map(value -> Map.entry(entry.getKey(), value))));
     }
 
     public static <R> Stream<R> present(final Stream<Optional<R>> original) {
@@ -193,7 +192,10 @@ public final class Streams {
 
     public static Stream<Map.Entry<Integer, Integer>> asMap(final IntStream sequentialStream) {
         final int[] index = new int[]{0};
-        return sequentialStream.sequential().mapToObj(v -> Maps.entry(index[0]++, v));
+        return sequentialStream.sequential().mapToObj(v -> {
+            final Integer key = index[0]++;
+            return Map.entry(key, v);
+        });
     }
 
     public static <R> Stream<R> pairStream(final IntStream original, final BiIntFunction<R> mapping) {

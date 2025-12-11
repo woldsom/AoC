@@ -27,7 +27,7 @@ public final class Functions {
 
 
     public static <K, V> BiFunction<K, V, Map.Entry<K, V>> entry() {
-        return Maps::entry;
+        return (key, value) -> Map.entry(key, value);
     }
 
     public static <V> IntFunction<Map.Entry<Integer, V>> intEntry(final IntFunction<V> valueFunction) {
@@ -186,11 +186,11 @@ public final class Functions {
     }
 
     public static <K, S, D> BiConsumer<Map.Entry<K, S>, Consumer<Map.Entry<K, D>>> onValueMulti(final BiConsumer<S, Consumer<D>> valueTransformation) {
-        return (entry, consumer) -> valueTransformation.accept(entry.getValue(), (inner) -> consumer.accept(Maps.entry(entry.getKey(), inner)));
+        return (entry, consumer) -> valueTransformation.accept(entry.getValue(), (inner) -> consumer.accept(Map.entry(entry.getKey(), inner)));
     }
 
     public static <K, S, D> BiConsumer<Map.Entry<K, S>, Consumer<Map.Entry<D, S>>> onKeyMulti(final BiConsumer<K, Consumer<D>> keyTransformation) {
-        return (entry, consumer) -> keyTransformation.accept(entry.getKey(), (inner) -> consumer.accept(Maps.entry(inner, entry.getValue())));
+        return (entry, consumer) -> keyTransformation.accept(entry.getKey(), (inner) -> consumer.accept(Map.entry(inner, entry.getValue())));
     }
 
     public static <K, L, V> Function<Map.Entry<K, V>, Map.Entry<L, V>> onKey(Function<K, L> modify) {
