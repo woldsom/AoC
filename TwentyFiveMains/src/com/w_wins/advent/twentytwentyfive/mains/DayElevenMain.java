@@ -36,7 +36,7 @@ public class DayElevenMain {
                 }
             });
         }
-        IO.println("Part 1: " + fromYouGraph.get("out").sum());
+        IO.println("Part 1: " + fromYouGraph.get("out").paths());
         IO.println("Part 2: " + graph.get("out").paths());
     }
 
