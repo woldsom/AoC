@@ -26,4 +26,8 @@ public record Paths(long noTrouble, long onlyDac, long onlyFft, long both) {
     public Paths butFft() {
         return new Paths(0, 0, noTrouble(), onlyDac());
     }
+
+    public long sum() {
+        return noTrouble() + onlyDac() + onlyFft() + both();
+    }
 }

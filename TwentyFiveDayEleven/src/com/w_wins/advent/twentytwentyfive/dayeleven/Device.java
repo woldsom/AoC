@@ -40,13 +40,6 @@ public record Device(String label, Set<Device> outputs) {
         return devices;
     }
 
-    public long pathsTo(final String targetLabel) {
-        if (targetLabel.equals(label)) {
-            return 1;
-        }
-        return outputs.stream().mapToLong(Functions.bindRight(Device::pathsTo, targetLabel)::apply).sum();
-    }
-
     @Override
     public String toString() {
         return "Device \"" + label + "\" with children " + outputs().stream().map(Device::label).collect(Collectors.joining(",")) + ".";
