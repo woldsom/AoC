@@ -9,7 +9,7 @@ public record Paths(int troubleCount, long paths) {
         return new Paths(0, 1);
     }
 
-    public Paths alterFor(String deviceLabel) {
+    public Paths visit(String deviceLabel) {
         if (TROUBLE.contains(deviceLabel)) {
             return new Paths(troubleCount() + 1, paths());
         } else {

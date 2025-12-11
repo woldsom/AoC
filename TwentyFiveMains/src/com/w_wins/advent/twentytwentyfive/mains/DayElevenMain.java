@@ -29,8 +29,9 @@ public class DayElevenMain {
             if ("you".equals(current)) {
                 fromYouGraph.put(current, Paths.getStart());
             }
+            final Paths troubleCounter = graph.get(current).visit(current);
             nameMap.get(current).stream().sorted(Comparator.comparing(ranks::get)).forEachOrdered(child -> {
-                graph.merge(child, graph.get(current).alterFor(current), Paths::add);
+                graph.merge(child, troubleCounter, Paths::add);
                 if (fromYouGraph.containsKey(current)) {
                     fromYouGraph.merge(child, fromYouGraph.get(current), Paths::add);
                 }
