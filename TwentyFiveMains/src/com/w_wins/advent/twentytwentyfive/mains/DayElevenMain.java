@@ -30,7 +30,7 @@ public class DayElevenMain {
                 fromYouGraph.put(current, Paths.getStart());
             }
             nameMap.get(current).stream().sorted(Comparator.comparing(ranks::get)).forEachOrdered(child -> {
-                graph.merge(child, Paths.howPathsAreAffectedAt(current).apply(graph.get(current)), Paths::add);
+                graph.merge(child, graph.get(current).alterFor(current), Paths::add);
                 if (fromYouGraph.containsKey(current)) {
                     fromYouGraph.merge(child, fromYouGraph.get(current), Paths::add);
                 }

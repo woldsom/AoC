@@ -1,17 +1,20 @@
 package com.w_wins.advent.twentytwentyfive.dayeleven;
 
-import java.util.function.UnaryOperator;
+import java.util.Set;
 
 public record Paths(int troubleCount, long paths) {
+    private static final Set<String> TROUBLE = Set.of("dac", "fft");
+
     public static Paths getStart() {
         return new Paths(0, 1);
     }
 
-    public static UnaryOperator<Paths> howPathsAreAffectedAt(final String deviceLabel) {
-        return switch (deviceLabel) {
-            case "dac", "fft" -> paths -> new Paths(paths.troubleCount() + 1, paths.paths());
-            default -> x -> x;
-        };
+    public Paths alterFor(String deviceLabel) {
+        if (TROUBLE.contains(deviceLabel)) {
+            return new Paths(troubleCount() + 1, paths());
+        } else {
+            return this;
+        }
     }
 
     public Paths add(Paths other) {
