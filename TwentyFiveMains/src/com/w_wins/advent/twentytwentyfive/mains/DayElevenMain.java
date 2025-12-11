@@ -18,12 +18,17 @@ import java.util.stream.Collectors;
 
 public class DayElevenMain {
     static void main() {
-        final Map<String, Set<String>> nameMap = new Utf8ResourceLines(Paths.class, "/input.txt").evaluate(lines -> lines.map(line -> {
-            final List<String> parts = Strings.split(line, ": ").toList();
-            return Map.entry(parts.getFirst(), Strings.split(parts.getLast()).collect(Collectors.toSet()));
-        }).collect(CollectorUtil.toMap()));
+        final Map<String, Set<String>> nameMap = new Utf8ResourceLines(Paths.class, "/input.txt")
+                .evaluate(lines -> lines
+                        .map(line -> Strings.split(line, ": ").toList())
+                        .map(parts ->
+                                Map.entry(
+                                        parts.getFirst(),
+                                        Strings.split(parts.getLast()).collect(Collectors.toSet())
+                                )).collect(CollectorUtil.toMap()));
         final List<String> topologicalSorted = Graphs.topologicalSort(nameMap);
-        final Map<String, Integer> ranks = Streams.asMap(topologicalSorted.stream()).map(Functions.flipEntry()).collect(CollectorUtil.toMap());
+        final Map<String, Integer> ranks = Streams.asMap(topologicalSorted.stream())
+                .map(Functions.flipEntry()).collect(CollectorUtil.toMap());
         final Map<String, Paths> graph = new HashMap<>(Map.of(topologicalSorted.getFirst(), Paths.getStart()));
         final Map<String, Paths> fromYouGraph = new HashMap<>();
         final BinaryHeap<Integer, String> heap = new BinaryHeap<>(topologicalSorted, ranks::get);
