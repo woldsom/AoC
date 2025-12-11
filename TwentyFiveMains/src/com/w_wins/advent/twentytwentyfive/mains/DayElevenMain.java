@@ -23,19 +23,15 @@ public class DayElevenMain {
         final Map<String, Set<String>> nameMap = new Utf8ResourceLines(Device.class, "/input.txt").evaluate(lines -> lines.map(Device::parse).collect(CollectorUtil.toMap()));
         final Set<Device> leaves = new HashSet<>();
         final Map<String, Device> devices = new HashMap<>(nameMap.keySet().stream().map(Functions.entry(Device::ofName)).collect(CollectorUtil.toMap()));
-        devices.forEach((name, device) -> {
-            nameMap.get(name).stream().map(k -> {
-                final Device child = devices.get(k);
-                if (child == null) {
-                    final Device leaf = Device.ofName(k);
-                    leaves.add(leaf);
-                    return leaf;
-                }
-                return child;
-            }).forEach(e -> {
-                device.outputs().add(e);
-            });
-        });
+        devices.forEach((name, device) -> nameMap.get(name).stream().map(k -> {
+            final Device child = devices.get(k);
+            if (child == null) {
+                final Device leaf = Device.ofName(k);
+                leaves.add(leaf);
+                return leaf;
+            }
+            return child;
+        }).forEach(device.outputs()::add));
         leaves.forEach(leaf -> {
             devices.put(leaf.label(), leaf);
             nameMap.put(leaf.label(), new HashSet<>());
@@ -43,7 +39,7 @@ public class DayElevenMain {
         IO.println("Part 1: " + devices.get("you").pathsTo("out"));
         final List<String> topologicalSorted = Graphs.topologicalSort(nameMap);
         IO.println(topologicalSorted);
-        final Map<String, Integer> ranks = Streams.asMap(topologicalSorted.stream()).map(e -> Map.entry(e.getValue(), e.getKey())).collect(CollectorUtil.toMap());
+        final Map<String, Integer> ranks = Streams.asMap(topologicalSorted.stream()).map(Functions.flipEntry()).collect(CollectorUtil.toMap());
         final Map<Device, Paths> graph = new HashMap<>(Map.of(devices.get(topologicalSorted.getFirst()), Paths.getStart()));
         final Function<Device, Integer> order = device -> ranks.get(device.label());
         if (!devices.values().stream().map(order).allMatch(Objects::nonNull)) {
@@ -63,4 +59,5 @@ public class DayElevenMain {
         }
         IO.println("Part 2: " + graph.get(devices.get("out")).both());
     }
+
 }
