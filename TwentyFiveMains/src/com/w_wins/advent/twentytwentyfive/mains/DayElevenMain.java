@@ -37,7 +37,7 @@ public class DayElevenMain {
             });
         }
         IO.println("Part 1: " + fromYouGraph.get("out").sum());
-        IO.println("Part 2: " + graph.get("out").both());
+        IO.println("Part 2: " + graph.get("out").paths());
     }
 
     public static Map.Entry<String, Set<String>> parse(final String line) {

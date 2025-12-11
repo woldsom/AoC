@@ -2,9 +2,9 @@ package com.w_wins.advent.twentytwentyfive.dayeleven;
 
 import java.util.function.UnaryOperator;
 
-public record Paths(long noTrouble, long onlyDac, long onlyFft, long both) {
+public record Paths(int troubleCount,long paths) {
     public static Paths getStart() {
-        return new Paths(1, 0, 0, 0);
+        return new Paths(0,1);
     }
 
     public static UnaryOperator<Paths> howPathsAreAffectedAt(final String deviceLabel) {
@@ -16,18 +16,24 @@ public record Paths(long noTrouble, long onlyDac, long onlyFft, long both) {
     }
 
     public Paths add(Paths other) {
-        return new Paths(noTrouble() + other.noTrouble(), onlyDac() + other.onlyDac(), onlyFft() + other.onlyFft(), both() + other.both());
+        if(troubleCount()>other.troubleCount()) {
+            return this;
+        } else if(troubleCount()<other.troubleCount()){
+            return other;
+        } else {
+            return new Paths(troubleCount(),paths()+ other.paths());
+        }
     }
 
     public Paths butDac() {
-        return new Paths(0, noTrouble(), 0, onlyFft());
+        return new Paths(troubleCount()+1,paths());
     }
 
     public Paths butFft() {
-        return new Paths(0, 0, noTrouble(), onlyDac());
+        return new Paths(troubleCount()+1,paths());
     }
 
     public long sum() {
-        return noTrouble() + onlyDac() + onlyFft() + both();
+        return paths();
     }
 }
