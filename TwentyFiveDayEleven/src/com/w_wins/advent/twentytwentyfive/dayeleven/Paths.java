@@ -1,8 +1,18 @@
 package com.w_wins.advent.twentytwentyfive.dayeleven;
 
+import java.util.function.UnaryOperator;
+
 public record Paths(long noTrouble, long onlyDac, long onlyFft, long both) {
     public static Paths getStart() {
         return new Paths(1, 0, 0, 0);
+    }
+
+    public static UnaryOperator<Paths> howPathsAreAffectedAt(final String deviceLabel) {
+        return switch (deviceLabel) {
+            case "dac" -> Paths::butDac;
+            case "fft" -> Paths::butFft;
+            default -> x -> x;
+        };
     }
 
     public Paths add(Paths other) {
