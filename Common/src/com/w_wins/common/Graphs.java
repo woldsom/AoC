@@ -38,7 +38,6 @@ public final class Graphs {
             final Set<T> modX = new HashSet<>(x);
             final T pivot = Stream.concat(p.stream(), x.stream()).max(Comparator.comparingInt(neighbours.andThen(Set::size)::apply)).orElseThrow();
             final Predicate<T> notPivotNeighbour = not(Functions.bindLeft(isNeighbours::test, pivot)::apply);
-            //final Predicate<T> notPivotNeighbour = _->true;
             p.stream().filter(notPivotNeighbour).forEach(v -> {
                 final Set<T> modR = new HashSet<>(r);
                 modR.add(v);
