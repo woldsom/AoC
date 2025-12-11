@@ -10,4 +10,5 @@ module com.w_wins.Common {
     exports com.w_wins.numbers.enumerating;
     exports com.w_wins.collections;
     exports com.w_wins.symbolic;
+    exports com.w_wins.time;
 }
