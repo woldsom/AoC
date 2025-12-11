@@ -154,7 +154,7 @@ public final class Streams {
         }).filter(deque -> !deque.isEmpty()).map(Collection::stream);
     }
 
-    public static <T> Stream<IntStream> slidingWindow(final IntStream stream, final int windowSize) {
+    public static Stream<IntStream> slidingWindow(final IntStream stream, final int windowSize) {
         final Deque<Integer> window = new ArrayDeque<>(windowSize);
         return stream.sequential().mapToObj(element -> {
             window.addLast(element);
@@ -255,7 +255,7 @@ public final class Streams {
                 }
             }
         });
-        return null;
+        return Arrays.stream(elements);
     }
 
     public static <T> Stream<T> reverse(final List<T> list) {

@@ -120,11 +120,11 @@ public final class Functions {
     }
 
     public static <T, U, R> BiFunction<T, U, R> ignoreLeft(final Function<U, R> function) {
-        return (ignored, u) -> function.apply(u);
+        return (_, u) -> function.apply(u);
     }
 
     public static <T, U, R> BiFunction<T, U, R> ignoreRight(final Function<T, R> function) {
-        return (t, ignored) -> function.apply(t);
+        return (t, _) -> function.apply(t);
     }
 
     public static <T, R> Function<T, R> ignoreArgument(final Supplier<R> supplier) {
