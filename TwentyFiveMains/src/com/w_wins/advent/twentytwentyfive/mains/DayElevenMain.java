@@ -18,7 +18,10 @@ import java.util.stream.Collectors;
 
 public class DayElevenMain {
     static void main() {
-        final Map<String, Set<String>> nameMap = new Utf8ResourceLines(Paths.class, "/input.txt").evaluate(lines -> lines.map(DayElevenMain::parse).collect(CollectorUtil.toMap()));
+        final Map<String, Set<String>> nameMap = new Utf8ResourceLines(Paths.class, "/input.txt").evaluate(lines -> lines.map(line -> {
+            final List<String> parts = Strings.split(line, ": ").toList();
+            return Map.entry(parts.getFirst(), Strings.split(parts.getLast()).collect(Collectors.toSet()));
+        }).collect(CollectorUtil.toMap()));
         final List<String> topologicalSorted = Graphs.topologicalSort(nameMap);
         final Map<String, Integer> ranks = Streams.asMap(topologicalSorted.stream()).map(Functions.flipEntry()).collect(CollectorUtil.toMap());
         final Map<String, Paths> graph = new HashMap<>(Map.of(topologicalSorted.getFirst(), Paths.getStart()));
@@ -39,10 +42,5 @@ public class DayElevenMain {
         }
         IO.println("Part 1: " + fromYouGraph.get("out").paths());
         IO.println("Part 2: " + graph.get("out").paths());
-    }
-
-    public static Map.Entry<String, Set<String>> parse(final String line) {
-        final List<String> parts = Strings.split(line, ": ").toList();
-        return Map.entry(parts.getFirst(), Strings.split(parts.getLast()).collect(Collectors.toSet()));
     }
 }
