@@ -53,4 +53,12 @@ public record Either<A, B>(Optional<A> a, Optional<B> b) {
     public Either<A, B> mapSame(final Function<A, A> aMap, final Function<B, B> bMap) {
         return map(aMap.andThen(Either::a), bMap.andThen(Either::b));
     }
+
+    public A getA(){
+        return a.orElseThrow();
+    }
+
+    public B getB(){
+        return b.orElseThrow();
+    }
 }
