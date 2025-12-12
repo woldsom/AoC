@@ -7,5 +7,5 @@ module com.w_wins.adventTwentyTwentyfive.Mains {
     requires com.w_wins.advent.twentytwentyfive.DayFour;
     requires com.w_wins.advent.twentytwentyfive.DayFive;
     requires com.w_wins.advent.twentytwentyfive.DaySix; requires com.w_wins.advent.twentytwentyfive.DaySeven; requires com.w_wins.advent.twentytwentyfive.DayEight; requires com.w_wins.advent.twentytwentyfive.DayNine; requires com.w_wins.advent.twentytwentyfive.DayTen; requires com.w_wins.advent.twentytwentyfive.DayEleven;
-    requires jdk.compiler;
+    requires jdk.compiler; requires com.w_wins.advent.twentytwentyfive.DayTwelve;
 }
