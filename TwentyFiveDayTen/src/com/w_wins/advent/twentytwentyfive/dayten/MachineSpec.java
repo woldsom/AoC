@@ -1,6 +1,7 @@
 package com.w_wins.advent.twentytwentyfive.dayten;
 
 import com.w_wins.common.BitStream;
+import com.w_wins.common.CollectionUtil;
 import com.w_wins.common.CollectorUtil;
 import com.w_wins.common.Functions;
 import com.w_wins.common.Streams;
@@ -80,60 +81,26 @@ public record MachineSpec(List<Boolean> targetLights, Set<Set<Integer>> buttonwi
     private OptionalInt pressesToJolt(final List<Integer> integers, final Set<Set<Integer>> buttons) {
         final MachineArguments key = new MachineArguments(integers, buttons);
         if (memo().containsKey(key)) {
-            //IO.println("Memo");
             return memo().get(key);
         }
         final OptionalInt returnValue = pressesToJoltNoMemo(integers, buttons);
-        //IO.println("Result was " + returnValue);
         memo().put(key, returnValue);
-        //IO.println(memo().size());
         return returnValue;
     }
 
     private OptionalInt pressesToJoltNoMemo(final List<Integer> joltTarget, final Set<Set<Integer>> buttons) {
-        //IO.println("Called pressesToJolt " + joltTarget + " with " + buttons);
         if (joltTarget.stream().allMatch(x -> x == 0)) {
             return OptionalInt.of(0);
         }
-        final Map<Integer, Integer> frequencies = buttons.stream().flatMap(set -> set.stream().map(i -> Map.entry(i, 1))).collect(CollectorUtil.toMap(Collectors.<Integer>summingInt(x -> x)));
-        if (Streams.asMap(joltTarget.stream()).anyMatch(e -> e.getValue() > 0 && frequencies.getOrDefault(e.getKey(), 0) <= 0)) {
-            //IO.println("Impossible to reduce "+joltTarget+" with "+buttons);
-            return OptionalInt.empty();
-        }
-        final Map<Integer, Integer> forced = Streams.asMap(joltTarget.stream()).filter(e -> frequencies.getOrDefault(e.getKey(), 0) == 1).collect(CollectorUtil.toMap());
-        if (!forced.isEmpty()) {
-            final int toForce = forced.keySet().stream().findAny().orElseThrow();
-            final Set<Integer> onlyButton = buttons.stream().filter(button -> button.contains(toForce)).findAny().orElseThrow();
-            final List<Integer> newTarget = new ArrayList<>(joltTarget);
-            final int times = joltTarget.get(toForce);
-            for (final Integer el : onlyButton) {
-                if (newTarget.get(el) < times) {
-                    return OptionalInt.empty();
-                } else {
-                    newTarget.set(el, newTarget.get(el) - times);
-                }
+        return CollectionUtil.subsets(buttons).<Integer>mapMulti((subset, downstream) -> {
+            final ArrayList<Integer> targetResult = new ArrayList<>(joltTarget);
+            subset.forEach(button -> button.forEach(field -> targetResult.set(field, targetResult.get(field) - 1)));
+            if (targetResult.stream().allMatch(n -> n % 2 == 0 && n >= 0)) {
+                targetResult.replaceAll(x -> x / 2);
+                OptionalInt recursed = pressesToJolt(targetResult, buttons).stream().map(x -> x * 2 + subset.size()).min();
+                recursed.ifPresent(downstream::accept);
             }
-            //IO.println("Pressed mandatory button "+onlyButton);
-            final OptionalInt result = pressesToJolt(newTarget, subList(buttons, onlyButton));
-            return result.isPresent() ? OptionalInt.of(result.getAsInt() + times) : result;
-        }
-        final OptionalInt resultValue = buttons.stream().map(jolts -> {
-            final int maxTimes = jolts.stream().mapToInt(joltTarget::get).min().orElseThrow();
-            if (maxTimes == 0) {
-                return OptionalInt.empty();
-            }
-            final int minTimes = 0;
-
-            return IntStream.iterate(maxTimes, x -> x > 0, x -> x - 1).mapToObj(times -> {
-                final List<Integer> joltResult = Streams.asMap(joltTarget.stream()).map(entry -> jolts.contains(entry.getKey()) ? entry.getValue() - times : entry.getValue()).toList();
-                final Set<Set<Integer>> remainingButtons = subList(buttons, jolts);
-                //IO.println("Recurring with " + joltResult + " and " + remainingButtons + " due to " + times + " presses");
-                final OptionalInt pressesResult = pressesToJolt(joltResult, remainingButtons);
-                //IO.println("Recurred returned " + pressesResult);
-                return pressesResult.isPresent() ? OptionalInt.of(pressesResult.getAsInt() + times) : OptionalInt.empty();
-            }).min(COMPARATOR).orElse(OptionalInt.empty());
-        }).min(COMPARATOR).orElse(OptionalInt.empty());
-        return resultValue;
+        }).mapToInt(x -> x).min();
     }
 
     private Set<Set<Integer>> subList(final Set<Set<Integer>> buttons, final Set<Integer> usedButton) {
@@ -160,7 +127,7 @@ public record MachineSpec(List<Boolean> targetLights, Set<Set<Integer>> buttonwi
             }
         });
         final int uBound = finalSum / buttonwiring().stream().mapToInt(Set::size).min().orElseThrow();
-        return "Low bound: " + lBound + ", high bound: "+uBound;
+        return "Low bound: " + lBound + ", high bound: " + uBound;
     }
 
     public String stats2() {
