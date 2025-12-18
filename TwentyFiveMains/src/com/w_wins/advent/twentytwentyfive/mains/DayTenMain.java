@@ -12,9 +12,8 @@ public class DayTenMain {
     static void main() {
         final HashMap<MachineArguments, OptionalInt> memo = new HashMap<>();
         final List<MachineSpec> machineSpecs = new Utf8ResourceLines(MachineSpec.class, "/input.txt").evaluate(lines -> lines.map(line -> MachineSpec.parse(line, memo)).toList());
-        machineSpecs.forEach(spec->IO.println(spec.stats()+"            for "+spec));
         IO.println(machineSpecs.stream().mapToInt(MachineSpec::pressesToLight).sum());
-        IO.println(machineSpecs.stream().peek(obj -> IO.println(obj.toPretty())).mapToInt(MachineSpec::pressesToJolt).peek(IO::println).sum());
+        IO.println(machineSpecs.stream().mapToInt(MachineSpec::pressesToJolt).sum());
     }
 }
 
