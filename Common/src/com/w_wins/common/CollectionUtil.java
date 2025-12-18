@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -24,6 +23,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static java.lang.Math.powExact;
 
 public final class CollectionUtil {
     public static <T, N extends Collection<? extends T>> Stream<T> removeSingletons(final Collection<N> collection) {
@@ -218,8 +219,16 @@ public final class CollectionUtil {
         list.set(b, tmp);
     }
 
-    public static <V,U> Stream<U> selfCross(final List<V> list, final BiFunction<V,V,U> consumer) {
+    public static <V, U> Stream<U> selfCross(final List<V> list, final BiFunction<V, V, U> consumer) {
         return IntStream.range(0, list.size() - 1).boxed().flatMap(a -> IntStream.range(a + 1, list.size()).mapToObj(b -> consumer.apply(list.get(a), list.get(b))));
+    }
+
+    public static <V> Stream<Set<V>> subsets(final Set<V> set) {
+        return IntStream.range(0, powExact(2, set.size())).boxed().map(Functions.<Set<V>, Integer, Set<V>>bindLeft(CollectionUtil::subset, set));
+    }
+
+    private static <V> Set<V> subset(final Set<V> set, final int mask) {
+        return Streams.asMap(set.stream()).filter(e -> (powExact(2, e.getKey()) & mask) > 0).map(Map.Entry::getValue).collect(Collectors.toSet());
     }
 
     public static <T> T singleton(final Collection<T> collection) {
