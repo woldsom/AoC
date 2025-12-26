@@ -28,10 +28,7 @@ public final class BeamGrid<T> implements Grid<Set<Beam<T>>> {
                         entry -> entry.getKey().x(),
                         Collectors.collectingAndThen(
                                 Collectors.mapping(
-                                        entry -> {
-                                            final Beam<T> value = new Beam<>(entry.getKey(), new Coordinate(0, 1), entry.getValue());
-                                            return Map.entry(entry.getKey().y(), value);
-                                        },
+                                        entry -> Map.entry(entry.getKey().y(), new Beam<>(entry.getKey(), new Coordinate(0, 1), entry.getValue())),
                                         CollectorUtil.toMap()
                                 ),
                                 TreeMap::new
@@ -43,10 +40,7 @@ public final class BeamGrid<T> implements Grid<Set<Beam<T>>> {
                         entry -> entry.getKey().y(),
                         Collectors.collectingAndThen(
                                 Collectors.mapping(
-                                        entry -> {
-                                            final Beam<T> value = new Beam<>(entry.getKey(), new Coordinate(1, 0), entry.getValue());
-                                            return Map.entry(entry.getKey().x(), value);
-                                        },
+                                        entry -> Map.entry(entry.getKey().x(), new Beam<>(entry.getKey(), new Coordinate(1, 0), entry.getValue())),
                                         CollectorUtil.toMap()
                                 ),
                                 TreeMap::new
@@ -86,23 +80,17 @@ public final class BeamGrid<T> implements Grid<Set<Beam<T>>> {
             //System.err.println(column + ", " + row + ": " + beams);
             if (beams.size() > 1) {
                 return "#";
-            } else if(beams.isEmpty()) {
+            } else if (beams.isEmpty()) {
                 return ".";
             }
             final Beam<T> beam = beams.stream().collect(CollectorUtil.singleton());
             return switch (beam.direction().x() + beam.direction().y() * 2) {
-                case 0 ->
-                        "*";
-                case -1 ->
-                        "<";
-                case 1 ->
-                        ">";
-                case -2 ->
-                        "^";
-                case 2 ->
-                        "v";
-                default ->
-                        "?";
+                case 0 -> "*";
+                case -1 -> "<";
+                case 1 -> ">";
+                case -2 -> "^";
+                case 2 -> "v";
+                default -> "?";
             };
         }).collect(Collectors.joining())).collect(Collectors.joining("\n"));
     }

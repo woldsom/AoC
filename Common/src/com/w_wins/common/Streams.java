@@ -192,10 +192,7 @@ public final class Streams {
 
     public static Stream<Map.Entry<Integer, Integer>> asMap(final IntStream sequentialStream) {
         final int[] index = new int[]{0};
-        return sequentialStream.sequential().mapToObj(v -> {
-            final Integer key = index[0]++;
-            return Map.entry(key, v);
-        });
+        return sequentialStream.sequential().mapToObj(v -> Map.entry(index[0]++, v));
     }
 
     public static <R> Stream<R> pairStream(final IntStream original, final BiIntFunction<R> mapping) {
